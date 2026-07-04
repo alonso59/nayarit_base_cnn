@@ -6,24 +6,24 @@ dataset:
   name: folder  # mnist, fashion_mnist, cifar10, cifar100, folder
   root: ./data
   path: ./dataset  # usado solo si name: folder
-  class_names: []  # usado solo si name: folder. Ejemplo: ["gato", "perro"]
+  class_names: ["airplane", "bird", "car", "cat", "dog"]  # usado solo si name: folder
   download: true
-  image_size: 
-  batch_size: 
-  num_workers: 
-  num_folds: 
+  image_size: 96
+  batch_size: 64
+  num_workers: 2
+  num_folds: 5
   fold_index: 0  # 0, 1, 2, 3 o 4
 
 training:
-  epochs: 
-  optimizer: 
-  learning_rate: 
+  epochs: 5
+  optimizer: adam
+  learning_rate: 0.001
   weight_decay: 0.0
-  betas: [0.0, 0.0]  # usado solo por adam
+  betas: [0.9, 0.999]  # usado solo por adam
 
 eval:
-# TODO: agregar ruta a checkpoint *.pt para evaluar un modelo entrenado o para predict
-# e.g. output/20260704_112353/checkpoints/best.pt
+  # Ruta opcional a checkpoint *.pt para evaluar o predecir.
+  # Ejemplo: output/20260704_112353/checkpoints/best.pt
   checkpoint_path: null
 
 hydra:

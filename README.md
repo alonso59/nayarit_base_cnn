@@ -1,5 +1,15 @@
 # CNN simple para clasificacion de imagenes
 
+## URL principal de entrega
+
+Formulario de submission:
+
+```text
+https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
+```
+
+Debes enviar URLs directas o raw para `predictions.csv` y `ABLATIONS.md`.
+
 Este proyecto entrena una CNN sencilla con PyTorch. El flujo esta separado en tres pasos:
 
 - entrenamiento con imagenes etiquetadas,
@@ -71,7 +81,12 @@ Usa `src/predict.py` para generar el archivo de entrega del challenge:
 - no calcula metricas,
 - genera `predictions.csv`.
 
-Para el leaderboard, los estudiantes deben entregar solo `predictions.csv` en el repositorio indicado para la competencia.
+Para el leaderboard, los estudiantes deben entregar `predictions.csv` y
+`ABLATIONS.md` en el formulario de submission:
+
+```text
+https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
+```
 
 ## 4. Estructura del dataset para el challenge
 
@@ -121,11 +136,11 @@ dataset:
   name: folder
   root: ./data
   path: ./dataset
-  class_names: []
+  class_names: ["airplane", "bird", "car", "cat", "dog"]
   download: true
-  image_size: 64
+  image_size: 96
   batch_size: 64
-  num_workers: 4
+  num_workers: 2
   num_folds: 5
   fold_index: 0
 
@@ -242,3 +257,7 @@ Revisa:
 - `src/config.yaml` tiene `dataset.name: folder`.
 - `dataset.image_size` coincide con el tamano que quieres alimentar a la CNN.
 - `predictions.csv` tiene las columnas exactas `id,y_pred`.
+- Escribiste `ABLATIONS.md` con tus experimentos o ablations.
+- Tienes URLs raw o enlaces directos para `predictions.csv` y `ABLATIONS.md`.
+- El formulario de entrega esta aqui:
+  `https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml`

@@ -1,0 +1,23 @@
+flowchart TD
+    A["Completar CNN<br/>src/model.py"] --> B["Elegir aumentos<br/>src/augmentations.py"]
+    B --> C["Ajustar experimento<br/>src/config.yaml"]
+    C --> D["Entrenar modelo<br/>python src/train.py"]
+    D --> E["Guardar checkpoint<br/>checkpoints/best.pt"]
+    E --> F["Evaluar en val<br/>python src/eval.py"]
+    F --> G{"Metricas de val<br/>son suficientes?"}
+    G -- "No" --> B
+    G -- "Si" --> H["Predecir test<br/>python src/predict.py"]
+    H --> I["Crear predictions.csv<br/>id,y_pred"]
+    I --> L["Escribir ABLATIONS.md<br/>experimentos"]
+    L --> J["Enviar issue<br/>Model submission"]
+    J --> K["Leaderboard final<br/>etiquetas ocultas"]
+
+    classDef setup fill:#EAF2FF,stroke:#2F6FED,stroke-width:1px,color:#0B1F3A;
+    classDef run fill:#EAF8EF,stroke:#2E7D32,stroke-width:1px,color:#0F2A16;
+    classDef decision fill:#FFF4D6,stroke:#B26A00,stroke-width:1px,color:#362000;
+    classDef submit fill:#F4ECFF,stroke:#7B3FC7,stroke-width:1px,color:#241238;
+
+    class A,B,C setup;
+    class D,E,F,H run;
+    class G decision;
+    class I,L,J,K submit;

@@ -1,8 +1,21 @@
 # Reto de tabla de posiciones con CNN
 
+## URL principal de entrega
+
+Sube tu entrega en el formulario `Model submission`:
+
+```text
+https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
+```
+
+Debes entregar dos URLs directas o raw:
+
+- `predictions.csv`
+- `ABLATIONS.md`
+
 ## 1. Objetivo
 
-El objetivo de este reto es construir una red neuronal convolucional (CNN) que clasifique imagenes de un dataset personalizado de 5 clases.
+El objetivo de este reto es construir una red neuronal convolucional (CNN) que clasifique imagenes del dataset STL-5 en 5 clases: `airplane`, `bird`, `car`, `cat` y `dog`.
 
 Entrenaras tu modelo usando las particiones publicas `train` y `val`. La tabla de posiciones final se calculara usando una particion `test` con etiquetas ocultas. No recibiras las etiquetas de test. En su lugar, debes generar un archivo `predictions.csv` y enviarlo al repositorio de la tabla de posiciones.
 
@@ -33,20 +46,21 @@ El flujo esperado es:
 4. Entrenar el modelo con src/train.py.
 5. Evaluar localmente en val con src/eval.py.
 6. Generar predictions.csv para el test sin etiquetas con src/predict.py.
-7. Enviar predictions.csv al repositorio de la tabla de posiciones.
+7. Escribir ABLATIONS.md con el resumen de experimentos.
+8. Enviar predictions.csv y ABLATIONS.md al repositorio de la tabla de posiciones.
 ```
 
-## 3. Descarga del dataset
+Diagrama del flujo completo:
 
-Descarga el dataset del reto desde:
+![Flujo de entrenamiento, evaluacion y submit](docs/training_submit_flow.png)
 
-[stl5_challenge_public.zip](https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip)
+## 3. Dataset del reto
+
+El dataset publico del reto ya esta preparado como `stl5_challenge/public/`. Para que los scripts funcionen con la configuracion base, copia su contenido a `dataset/` dentro de este repositorio.
 
 Linux/macOS:
 
 ```bash
-curl -L -o stl5_challenge_public.zip https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip
-unzip -q stl5_challenge_public.zip
 rm -rf dataset
 mkdir dataset
 cp -R stl5_challenge/public/. dataset/
@@ -55,14 +69,30 @@ cp -R stl5_challenge/public/. dataset/
 Windows PowerShell:
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip" -OutFile "stl5_challenge_public.zip"
-Expand-Archive -Path "stl5_challenge_public.zip" -DestinationPath "." -Force
 if (Test-Path dataset) { Remove-Item dataset -Recurse -Force }
 New-Item -ItemType Directory -Path dataset | Out-Null
 Copy-Item -Path "stl5_challenge/public/*" -Destination "dataset" -Recurse
 ```
 
-Despues de descargarlo y extraerlo, coloca el dataset en el repositorio con esta estructura:
+Si no tienes la carpeta `stl5_challenge/public/`, puedes descargar el paquete publico desde:
+
+[stl5_challenge_public.zip](https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip)
+
+Linux/macOS:
+
+```bash
+curl -L -o stl5_challenge_public.zip https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip
+unzip -q stl5_challenge_public.zip
+```
+
+Windows PowerShell:
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip" -OutFile "stl5_challenge_public.zip"
+Expand-Archive -Path "stl5_challenge_public.zip" -DestinationPath "." -Force
+```
+
+Despues de copiarlo, la estructura esperada por `src/config.yaml` es:
 
 ```text
 dataset/
@@ -78,11 +108,15 @@ dataset/
 │   ├── 2/
 │   ├── 3/
 │   └── 4/
-└── test/
-    └── images/
-        ├── test_000001.png
-        ├── test_000002.png
-        └── ...
+├── test/
+│   └── images/
+│       ├── test_000001.png
+│       ├── test_000002.png
+│       └── ...
+├── train_labels.csv
+├── val_labels.csv
+├── sample_submission.csv
+└── class_names.json
 ```
 
 Importante:
@@ -91,7 +125,18 @@ Importante:
 - `val` tiene etiquetas mediante carpetas de clase.
 - `test/images` no tiene etiquetas.
 - `test` no debe contener carpetas de clase.
+- `train_labels.csv` y `val_labels.csv` son archivos de referencia para inspeccion y verificacion; los scripts entrenan usando las carpetas `train/0`, `train/1`, etc.
+- `sample_submission.csv` muestra el formato exacto esperado para `predictions.csv`.
+- `class_names.json` contiene el mapeo oficial entre indices y nombres de clase.
 - Las etiquetas de test estan ocultas y solo las conserva el instructor.
+
+Tamano del dataset publico:
+
+| Split | Imagenes | Detalle |
+|---|---:|---|
+| `train` | 3000 | 600 imagenes por clase |
+| `val` | 1000 | 200 imagenes por clase |
+| `test/images` | 2500 | sin etiquetas publicas |
 
 ## 4. Clases
 
@@ -99,11 +144,11 @@ El dataset contiene 5 clases:
 
 | Indice de clase | Nombre de clase |
 |---:|---|
-| 0 | [TODO: class_0] |
-| 1 | [TODO: class_1] |
-| 2 | [TODO: class_2] |
-| 3 | [TODO: class_3] |
-| 4 | [TODO: class_4] |
+| 0 | airplane |
+| 1 | bird |
+| 2 | car |
+| 3 | cat |
+| 4 | dog |
 
 Tu archivo `predictions.csv` debe usar el indice numerico de la clase, no el nombre de la clase.
 
@@ -135,12 +180,13 @@ Para el reto, los campos importantes son:
 dataset:
   name: folder
   path: ./dataset
-  image_size: 200 # tamanio de input de la imagen que depende directamente de tu modelo propuesto y el numero de parametros
-  batch_size: 128 # elegir este valor dependiendo de la cantidad de memoria disponible
-  num_workers: 2 # batch_size / 4
+  class_names: ["airplane", "bird", "car", "cat", "dog"]
+  image_size: 96 # tamano de entrada inicial; puedes ajustarlo si tu CNN lo requiere
+  batch_size: 64 # reduce este valor si te quedas sin memoria
+  num_workers: 2
 
 training:
-  epochs: 1
+  epochs: 5
   optimizer: adam o sgd
   learning_rate: 0.001 o 1e-3 o 1e-2 o 1e-4
   weight_decay: 0.0 o 0.0001
@@ -280,27 +326,85 @@ Reglas:
 
 - El `id` debe coincidir con el nombre del archivo de imagen de test sin extension.
 - El valor `y_pred` debe ser un indice entero de clase entre `0` y `4`.
-- El CSV debe contener exactamente una prediccion por cada imagen de test.
+- El CSV debe contener exactamente una prediccion por cada imagen de test: 2500 filas de prediccion mas la cabecera.
+- Puedes usar `dataset/sample_submission.csv` como plantilla del formato.
 - No modifiques los nombres de archivo de las imagenes de test.
 - No incluyas probabilidades en el CSV enviado.
 
 ## 12. Repositorio de entrega
 
-Envia tu `predictions.csv` aqui:
+Envia tu entrega usando el formulario `Model submission`:
 
 ```text
-[TODO: SUBMISSION_REPOSITORY_URL]
+https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
+```
+
+Repositorio de la tabla de posiciones:
+
+```text
+https://github.com/alonso59/nayarit_challenge
 ```
 
 Metodo de entrega:
 
+1. Genera `predictions.csv`.
+2. Escribe `ABLATIONS.md`.
+3. Sube ambos archivos a tu propio repositorio o fork.
+4. Copia las URLs raw o enlaces directos de descarga de ambos archivos.
+5. Abre el formulario `Model submission`.
+6. Completa `student_id`, `student_name`, `model_name`, `num_parameters`, `validation_accuracy` y `validation_f1_macro`.
+7. Pega las URLs de `predictions.csv` y `ABLATIONS.md`.
+8. Envia el issue.
+
+El repositorio de entrega validara automaticamente los archivos y comentara en el issue si la entrega fue aceptada o rechazada.
+
+Campos esperados en el formulario:
+
+```text
+student_id
+student_name
+model_name
+num_parameters
+validation_accuracy
+validation_f1_macro
+predictions_csv_url
+ablations_md_url
+notes
+```
+
+Puedes enviar multiples veces. La tabla de posiciones publica conservara solo la ultima entrega valida de cada estudiante.
+
+Plantilla minima para `ABLATIONS.md`:
+
+```markdown
+# Ablation Study
+
+## Modelo final
+
+- Arquitectura:
+- Numero de parametros:
+- Accuracy de validacion:
+- F1 macro de validacion:
+
+## Experimentos
+
+| Experimento | Cambio | Params | Val accuracy | Val F1 macro | Comentario |
+|---|---|---:|---:|---:|---|
+| Baseline | | | | | |
+| Experimento 1 | | | | | |
+
+## Conclusion
+
+Describe que decision mejoro mas el modelo.
+```
+
+Metodo alternativo desde la pagina de GitHub:
+
 1. Abre el repositorio de entrega.
 2. Crea un issue nuevo usando el formulario `Model submission`.
-3. Completa la informacion de participante.
-4. Proporciona un enlace a tu archivo `predictions.csv`.
+3. Completa la informacion de estudiante.
+4. Proporciona enlaces a `predictions.csv` y `ABLATIONS.md`.
 5. Envia el issue.
-
-Puedes enviar multiples veces. La tabla de posiciones publica conservara solo la ultima entrega valida de cada participante.
 
 ## 13. Multiples entregas
 
@@ -318,7 +422,8 @@ Una entrega es valida solo si:
 - todos los IDs de test estan presentes,
 - no hay IDs duplicados,
 - todas las etiquetas predichas son enteros validos de `0` a `4`,
-- el participante usa el mismo `team_id` en todas sus entregas.
+- `ABLATIONS.md` existe, no esta vacio y contiene la palabra `Ablation`, `ablation`, `Experiment` o `experiment`,
+- el participante usa el mismo `student_id` en todas sus entregas.
 
 ## 14. Restricciones
 
@@ -367,10 +472,10 @@ Se recomienda ampliamente incluir una tabla de ablacion:
 
 | Experimento | Arquitectura / cambio | Params | Val accuracy | Val F1 macro | Comentario |
 |---|---|---:|---:|---:|---|
-| Baseline | CNN simple | [TODO] | [TODO] | [TODO] | [TODO] |
-| + Augmentation1 | se agregaron transformaciones aleatorias | [TODO] | [TODO] | [TODO] | [TODO] |
-| + Augmentation2 | se agregaron transformaciones aleatorias | [TODO] | [TODO] | [TODO] | [TODO] |
-| + Augmentation3 | se agregaron transformaciones aleatorias | [TODO] | [TODO] | [TODO] | [TODO] |
+| Baseline | CNN simple | completar | completar | completar | completar |
+| + Augmentation1 | se agregaron transformaciones aleatorias | completar | completar | completar | completar |
+| + Augmentation2 | se agregaron transformaciones aleatorias | completar | completar | completar | completar |
+| + Augmentation3 | se agregaron transformaciones aleatorias | completar | completar | completar | completar |
 
 ## 16. Politica de evaluacion
 
@@ -383,18 +488,21 @@ final_score = 0.70 * macro_f1 + 0.20 * accuracy + 0.10 * efficiency_score
 ```
 
 ```text
-efficiency_score: numero de parametros del modelo
+efficiency_score = min(1.0, 100000 / num_parameters)
 ```
-Si se usa una puntuacion de eficiencia, el instructor publicara la regla de conteo de parametros antes de la primera entrega oficial.
+
+No hay limite maximo de parametros. La eficiencia da credito completo a modelos
+con hasta 100,000 parametros y penaliza de forma gradual a modelos mas grandes
+sin descalificarlos.
 
 ## 17. Fechas limite
 
 | Hito | Fecha |
 |---|---|
-| Dataset publicado | [TODO: DATE] |
-| Primera entrega valida | [TODO: DATE] |
-| Fecha limite de entrega final | [TODO: DATE] |
-| Presentacion final | [TODO: DATE] |
+| Dataset publicado | Por anunciar |
+| Primera entrega valida | Por anunciar |
+| Fecha limite de entrega final | Por anunciar |
+| Presentacion final | Por anunciar |
 
 ## 18. Checklist final antes de entregar
 
@@ -408,6 +516,7 @@ Antes de enviar, verifica:
 [ ] predictions.csv tiene las columnas id,y_pred.
 [ ] Los valores de y_pred son enteros de 0 a 4.
 [ ] predictions.csv tiene una fila por cada imagen de test.
-[ ] El team_id es el mismo que en entregas anteriores.
-[ ] El enlace al CSV es accesible para el instructor/flujo del leaderboard.
+[ ] Escribi ABLATIONS.md.
+[ ] El student_id es el mismo que en entregas anteriores.
+[ ] Las URLs raw de predictions.csv y ABLATIONS.md son accesibles para el flujo del leaderboard.
 ```
