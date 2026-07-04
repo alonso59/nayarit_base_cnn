@@ -8,7 +8,7 @@ Sube tu entrega en el formulario `Model submission`:
 https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
 ```
 
-Debes entregar dos URLs directas o raw:
+Debes subir un archivo `submission.zip` que contenga:
 
 - `predictions.csv`
 - `ABLATIONS.md`
@@ -47,7 +47,7 @@ El flujo esperado es:
 5. Evaluar localmente en val con src/eval.py.
 6. Generar predictions.csv para el test sin etiquetas con src/predict.py.
 7. Escribir ABLATIONS.md con el resumen de experimentos.
-8. Enviar predictions.csv y ABLATIONS.md al repositorio de la tabla de posiciones.
+8. Crear submission.zip y subirlo al repositorio de la tabla de posiciones.
 ```
 
 Diagrama del flujo completo:
@@ -349,12 +349,23 @@ Metodo de entrega:
 
 1. Genera `predictions.csv`.
 2. Escribe `ABLATIONS.md`.
-3. Sube ambos archivos a tu propio repositorio o fork.
-4. Copia las URLs raw o enlaces directos de descarga de ambos archivos.
-5. Abre el formulario `Model submission`.
-6. Completa `student_id`, `student_name`, `model_name`, `num_parameters`, `validation_accuracy` y `validation_f1_macro`.
-7. Pega las URLs de `predictions.csv` y `ABLATIONS.md`.
-8. Envia el issue.
+3. Crea `submission.zip` con esos dos archivos en la raiz del ZIP.
+4. Abre el formulario `Model submission`.
+5. Completa `student_id`, `student_name`, `model_name`, `num_parameters`, `validation_accuracy` y `validation_f1_macro`.
+6. Sube `submission.zip` en el campo `submission_zip`.
+7. Envia el issue.
+
+Linux/macOS:
+
+```bash
+zip submission.zip predictions.csv ABLATIONS.md
+```
+
+Windows PowerShell:
+
+```powershell
+Compress-Archive -Path predictions.csv, ABLATIONS.md -DestinationPath submission.zip -Force
+```
 
 El repositorio de entrega validara automaticamente los archivos y comentara en el issue si la entrega fue aceptada o rechazada.
 
@@ -367,8 +378,7 @@ model_name
 num_parameters
 validation_accuracy
 validation_f1_macro
-predictions_csv_url
-ablations_md_url
+submission_zip
 notes
 ```
 
@@ -403,7 +413,7 @@ Metodo alternativo desde la pagina de GitHub:
 1. Abre el repositorio de entrega.
 2. Crea un issue nuevo usando el formulario `Model submission`.
 3. Completa la informacion de estudiante.
-4. Proporciona enlaces a `predictions.csv` y `ABLATIONS.md`.
+4. Sube `submission.zip`.
 5. Envia el issue.
 
 ## 13. Multiples entregas
@@ -517,6 +527,7 @@ Antes de enviar, verifica:
 [ ] Los valores de y_pred son enteros de 0 a 4.
 [ ] predictions.csv tiene una fila por cada imagen de test.
 [ ] Escribi ABLATIONS.md.
+[ ] Cree submission.zip con predictions.csv y ABLATIONS.md en la raiz del ZIP.
 [ ] El student_id es el mismo que en entregas anteriores.
-[ ] Las URLs raw de predictions.csv y ABLATIONS.md son accesibles para el flujo del leaderboard.
+[ ] Subi submission.zip en el formulario Model submission.
 ```

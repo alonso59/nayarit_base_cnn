@@ -8,7 +8,7 @@ Formulario de submission:
 https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
 ```
 
-Debes enviar URLs directas o raw para `predictions.csv` y `ABLATIONS.md`.
+Debes subir un archivo `submission.zip` con `predictions.csv` y `ABLATIONS.md`.
 
 Este proyecto entrena una CNN sencilla con PyTorch. El flujo esta separado en tres pasos:
 
@@ -82,7 +82,7 @@ Usa `src/predict.py` para generar el archivo de entrega del challenge:
 - genera `predictions.csv`.
 
 Para el leaderboard, los estudiantes deben entregar `predictions.csv` y
-`ABLATIONS.md` en el formulario de submission:
+`ABLATIONS.md` dentro de `submission.zip` en el formulario de submission:
 
 ```text
 https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml
@@ -258,6 +258,18 @@ Revisa:
 - `dataset.image_size` coincide con el tamano que quieres alimentar a la CNN.
 - `predictions.csv` tiene las columnas exactas `id,y_pred`.
 - Escribiste `ABLATIONS.md` con tus experimentos o ablations.
-- Tienes URLs raw o enlaces directos para `predictions.csv` y `ABLATIONS.md`.
+- Creaste `submission.zip` con `predictions.csv` y `ABLATIONS.md` en la raiz del ZIP.
 - El formulario de entrega esta aqui:
   `https://github.com/alonso59/nayarit_challenge/issues/new?template=model_submission.yml`
+
+Linux/macOS:
+
+```bash
+zip submission.zip predictions.csv ABLATIONS.md
+```
+
+Windows PowerShell:
+
+```powershell
+Compress-Archive -Path predictions.csv, ABLATIONS.md -DestinationPath submission.zip -Force
+```

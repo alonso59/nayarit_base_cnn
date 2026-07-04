@@ -9,7 +9,8 @@ flowchart TD
     G -- "Si" --> H["Predecir test<br/>python src/predict.py"]
     H --> I["Crear predictions.csv<br/>id,y_pred"]
     I --> L["Escribir ABLATIONS.md<br/>experimentos"]
-    L --> J["Enviar issue<br/>Model submission"]
+    L --> M["Crear submission.zip<br/>2 archivos"]
+    M --> J["Subir ZIP<br/>Model submission"]
     J --> K["Leaderboard final<br/>etiquetas ocultas"]
 
     classDef setup fill:#EAF2FF,stroke:#2F6FED,stroke-width:1px,color:#0B1F3A;
@@ -20,4 +21,4 @@ flowchart TD
     class A,B,C setup;
     class D,E,F,H run;
     class G decision;
-    class I,L,J,K submit;
+    class I,L,M,J,K submit;
