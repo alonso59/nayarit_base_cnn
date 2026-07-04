@@ -55,6 +55,8 @@ Thumbs.db
 # Mantener archivos plantilla del repositorio aunque coincidan con patrones amplios
 !src/
 !src/**
+src/**/__pycache__/
+src/**/*.py[cod]
 !README.md
 !CHALLENGE.md
 !requirements.txt
