@@ -2,6 +2,7 @@
 data/
 dataset/
 *.zip
+!stl5_challenge_public.zip
 *.tar
 *.tar.gz
 *.tgz

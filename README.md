@@ -8,6 +8,32 @@ Este proyecto entrena una CNN sencilla con PyTorch. El flujo esta separado en tr
 
 Los comandos de este README asumen que estas en la raiz del proyecto, es decir, en la carpeta que contiene `src/`, `data/` y `dataset/`.
 
+## Dataset del reto
+
+Descarga directa:
+
+[stl5_challenge_public.zip](https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip)
+
+Linux/macOS:
+
+```bash
+curl -L -o stl5_challenge_public.zip https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip
+unzip -q stl5_challenge_public.zip
+rm -rf dataset
+mkdir dataset
+cp -R stl5_challenge/public/. dataset/
+```
+
+Windows PowerShell:
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/alonso59/nayarit_base_cnn/raw/main/stl5_challenge_public.zip" -OutFile "stl5_challenge_public.zip"
+Expand-Archive -Path "stl5_challenge_public.zip" -DestinationPath "." -Force
+if (Test-Path dataset) { Remove-Item dataset -Recurse -Force }
+New-Item -ItemType Directory -Path dataset | Out-Null
+Copy-Item -Path "stl5_challenge/public/*" -Destination "dataset" -Recurse
+```
+
 ## 1. Instalar dependencias
 
 ```bash
