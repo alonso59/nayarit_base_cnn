@@ -1,0 +1,61 @@
+# Datos del reto y datasets descargados
+data/
+dataset/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Salidas de entrenamiento, evaluacion y prediccion
+output/
+outputs/
+runs/
+logs/
+checkpoints/
+predictions.csv
+*.log
+
+# Modelos y pesos entrenados
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.pickle
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.ipynb_checkpoints/
+
+# Entornos locales
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Jupyter / Colab temporales
+*.ipynb_checkpoints
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Mantener archivos plantilla del repositorio aunque coincidan con patrones amplios
+!src/
+!src/**
+!README.md
+!CHALLENGE.md
+!requirements.txt
+!run_train.ipynb
+!LICENSE
